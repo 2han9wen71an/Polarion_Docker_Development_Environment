@@ -1,0 +1,46 @@
+# Git 相关
+.git
+.gitignore
+.gitattributes
+
+# 文档
+README*.md
+*.md
+docs/
+documentation/
+
+# 构建工具和脚本（除了必需的）
+build.sh
+*.log
+*.tmp
+
+# IDE 和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件
+*.bak
+*.backup
+*.old
+*.orig
+
+# 压缩文件（除了 Polarion 安装包）
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.tar.xz
+!*Polarion*linux*.zip
+!*polarion*linux*.zip
+
+# 其他不需要的文件
+node_modules/
+.npm/
+.cache/

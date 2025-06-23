@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  polarion:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # 可选：指定 Polarion 版本
+        # POLARION_VERSION: "22_R2"
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    
+    image: polarion:latest
+    container_name: polarion
+    
+    ports:
+      - "8080:8080"    # Polarion Web 界面
+      - "1990:1990"    # Polarion 管理端口（可选）
+    
+    environment:
+      # 允许访问的主机列表
+      ALLOWED_HOSTS: "localhost,127.0.0.1,host.docker.internal"
+
+      # 时区设置
+      TZ: "Asia/Shanghai"
+
+      # 可选的环境变量
+      # JAVA_OPTS: "-Xmx4g -Xms2g"
+    
+    volumes:
+      # 持久化 Polarion 数据
+      - polarion-data:/opt/polarion/data
+      - polarion-logs:/opt/polarion/logs
+      
+      # 可选：挂载配置文件
+      # - ./config:/opt/polarion/etc:ro
+    
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+          cpus: '4'
+        reservations:
+          memory: 2G
+          cpus: '2'
+    
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/polarion/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    
+    # 重启策略
+    restart: unless-stopped
+    
+    # 网络配置
+    networks:
+      - polarion-network
+
+# 数据卷
+volumes:
+  polarion-data:
+    driver: local
+    name: polarion-data
+  polarion-logs:
+    driver: local
+    name: polarion-logs
+
+# 网络配置
+networks:
+  polarion-network:
+    driver: bridge
+    name: polarion-network
